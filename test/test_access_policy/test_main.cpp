@@ -113,6 +113,22 @@ void test_controller_publishes_rfid_and_unlocks_only_with_derived_code() {
     TEST_ASSERT_EQUAL(1, door.openCount);
 }
 
+void test_repeated_command_does_not_open_door_again() {
+  FakeReader reader;
+  FakeDoor door;
+  FakeBus bus;
+  AccessControllerLogic controller(reader, door, bus, RFID_TOPIC,
+                                   COMMAND_TOPIC, RELEASED_TOPIC);
+  reader.nextUid = "A1B2C3";
+  controller.update();
+  const std::string code =
+      door_lock::AccessPolicy::deriveAccessCode("A1B2C3");
+  controller.onMqttMessage(COMMAND_TOPIC, code);
+  controller.onMqttMessage(COMMAND_TOPIC, code);
+  TEST_ASSERT_EQUAL(1, door.openCount);
+  TEST_ASSERT_EQUAL(0, door.closeCount);
+}
+
 int main() {
   UNITY_BEGIN();
   RUN_TEST(test_normalize_code_removes_separators_and_uppercases);
@@ -120,5 +136,6 @@ int main() {
   RUN_TEST(test_controller_publishes_rfid_and_unlocks_only_with_derived_code);
   RUN_TEST(test_controller_closes_with_same_rfid_and_notifies_server);
   RUN_TEST(test_controller_keeps_open_for_other_rfid);
+  RUN_TEST(test_repeated_command_does_not_open_door_again);
   return UNITY_END();
 }
