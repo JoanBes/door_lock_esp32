@@ -63,3 +63,26 @@ The default topics are:
 
 The broker must support TLS on the configured port. The current firmware uses
 `setInsecure()` and does not verify the broker's certificate.
+
+## Wiring
+
+| Component | ESP32 |
+| --- | --- |
+| MFRC522 SDA/SS | GPIO 5 |
+| MFRC522 RST | GPIO 4 |
+| MFRC522 SCK | GPIO 18 |
+| MFRC522 MOSI | GPIO 23 |
+| MFRC522 MISO | GPIO 19 |
+| MFRC522 VCC | 3.3 V |
+| MFRC522 GND | GND |
+| Servo signal | GPIO 16 |
+| LED with resistor | GPIO 2 |
+
+Connect the RC522 IRQ pin to nothing, and power the reader only from 3.3 V.
+The servo requires a suitable supply, normally an external 5 V supply; connect
+its ground to the ESP32 ground. Do not power a servo from a GPIO pin or the
+ESP32's 3.3 V supply. Connect GPIO 2 to the LED anode through a 220–330 ohm
+resistor, and connect the LED cathode to ground.
+
+The signal connections are grouped on the right side of the board: GPIO 4, 5,
+16, 18, 19, and 23. See [the wiring diagram](cables_diagram.png).
