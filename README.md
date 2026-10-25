@@ -86,3 +86,27 @@ resistor, and connect the LED cathode to ground.
 
 The signal connections are grouped on the right side of the board: GPIO 4, 5,
 16, 18, 19, and 23. See [the wiring diagram](cables_diagram.png).
+
+## Build and test
+
+With PlatformIO installed, run from the project root:
+
+```bash
+pio test -e native
+pio run -e esp32dev
+```
+
+Native tests use reader, message bus, and actuator doubles to check access
+codes, authorization, opening, closing with the same card, release messages,
+and rejected cards. They do not require an ESP32. Physical RFID reading,
+broker connectivity, and servo and LED operation require testing on the
+connected hardware.
+
+To upload the firmware and open the serial monitor:
+
+```bash
+pio run -e esp32dev -t upload
+pio device monitor -b 9600
+```
+
+The vendored PubSubClient library and its license are in `lib/pubsubclient`.
